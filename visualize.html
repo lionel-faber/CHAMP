@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>CHAMP Code Visualizer</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+
+  <script type="text/javascript" src="build/visualize.bundle.js?6b105bfa5b" charset="utf-8"></script>
+  <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="js/html2canvas.js"></script>
+  <script type="text/javascript" src="js/jspdf.min.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <style>
+    .neon-text {
+      class="support css-property">-webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      border: none;
+      font: normal normal bold 72px/normal "Atomic Age", Helvetica, sans-serif;
+      color: rgb(64, 126, 196);
+      text-align: center;
+      -o-text-overflow: clip;
+      text-overflow: clip;
+      text-shadow: 1px 1px 0 rgb(77, 162, 252), -1px -1px 0 rgb(77, 162, 252), 1px -1px 0 rgb(77, 162, 252), -1px 1px 0 rgb(77, 162, 252), 4px 4px 8px rgb(44, 88, 137), -4px 4px 8px rgb(44, 88, 137), 4px -4px 8px rgb(44, 88, 137), -4px -4px 8px rgb(44, 88, 137);
+      -webkit-transition: all 500ms cubic-bezier(0.42, 0, 0.58, 1);
+      -moz-transition: all 500ms cubic-bezier(0.42, 0, 0.58, 1);
+      -o-transition: all 500ms cubic-bezier(0.42, 0, 0.58, 1);
+      transition: all 500ms cubic-bezier(0.42, 0, 0.58, 1);
+    }
+
+    .neon-text:hover {
+      text-shadow: 1px 1px 0 rgb(77, 162, 252), -1px -1px 0 rgb(77, 162, 252), 1px -1px 0 rgb(77, 162, 252), -1px 1px 0 rgb(77, 162, 252);
+      -webkit-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      -moz-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      -o-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+    }
+
+    .enjoy-css {
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      width: 160px;
+      padding: 9px 20px;
+      overflow: hidden;
+      border: 1px solid;
+      font: normal 19px/1 "Acme", Helvetica, sans-serif;
+      color: rgba(0, 0, 0, 1);
+      cursor: pointer;
+      text-align: center;
+      -o-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      background: #ffffff;
+      -webkit-box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+      box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    .subheading {
+      display: inline-block;
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      padding: 5px 10px;
+      border: 1px solid #018dc4;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      font: normal medium/normal Arial, Helvetica, sans-serif;
+      color: rgba(255, 255, 255, 0.9);
+      -o-text-overflow: clip;
+      text-overflow: clip;
+      background: #0199d9;
+      -webkit-box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+      text-shadow: -1px -1px 0 rgba(15, 73, 168, 0.66);
+      -webkit-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      -moz-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      -o-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+      transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+    }
+
+    .codelink {
+      display: inline-block;
+      margin-top: 10px;
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      position: relative;
+      cursor: pointer;
+      top: 0;
+      text-decoration: none;
+      font-weight: bold;
+      background-color: #ddd;
+      color: blue;
+      padding: 0 25.600000381469727px;
+      border: 1px solid rgb(225, 225, 225);
+      font: normal normal 300 15px/32px "Electrolize", Helvetica, sans-serif;
+      color: rgb(102, 102, 102);
+      text-align: center;
+      -o-text-overflow: clip;
+      text-overflow: clip;
+      background: -webkit-linear-gradient(0deg, rgb(243, 243, 243) 0, rgb(233, 233, 233) 100%), rgb(238, 238, 238);
+      background: -moz-linear-gradient(90deg, rgb(243, 243, 243) 0, rgb(233, 233, 233) 100%), rgb(238, 238, 238);
+      background: linear-gradient(90deg, rgb(243, 243, 243) 0, rgb(233, 233, 233) 100%), rgb(238, 238, 238);
+      -webkit-background-origin: padding-box;
+      background-origin: padding-box;
+      -webkit-background-clip: border-box;
+      background-clip: border-box;
+      -webkit-background-size: auto auto;
+      background-size: auto auto;
+      -webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.298039) inset, 0 -1px 1px 0 rgba(255, 255, 255, 0.14902) inset, 0 7px 0 0 rgb(187, 187, 187), 0 8px 3px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.298039) inset, 0 -1px 1px 0 rgba(255, 255, 255, 0.14902) inset, 0 7px 0 0 rgb(187, 187, 187), 0 8px 3px 0 rgba(0, 0, 0, 0.2);
+      -webkit-transition: all 0.1s cubic-bezier(0.25, 0.25, 0.75, 0.75);
+      -moz-transition: all 0.1s cubic-bezier(0.25, 0.25, 0.75, 0.75);
+      -o-transition: all 0.1s cubic-bezier(0.25, 0.25, 0.75, 0.75);
+      transition: all 0.1s cubic-bezier(0.25, 0.25, 0.75, 0.75);
+    }
+
+    .retro {
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      margin: 0 auto;
+      border: none;
+      font: normal 32px/normal "Anton", Helvetica, sans-serif;
+      color: rgb(112, 112, 112);
+      text-align: center;
+      text-transform: uppercase;
+      -o-text-overflow: clip;
+      text-overflow: clip;
+      letter-spacing: 10px;
+      text-shadow: 4px 4px 0 rgb(238, 238, 238), 6px 6px 0 rgb(112, 112, 112);
+    }
+  </style>
+  <link async href="http://fonts.googleapis.com/css?family=Acme" data-generated="http://enjoycss.com" rel="stylesheet" type="text/css" />
+  <link async href="http://fonts.googleapis.com/css?family=Anton" data-generated="http://enjoycss.com" rel="stylesheet" type="text/css" />
+  <link async href="http://fonts.googleapis.com/css?family=Electrolize" data-generated="http://enjoycss.com" rel="stylesheet" type="text/css" />
+
+  <script>
+    function exampleCodeAction(id) {
+      if (document.getElementById(id).style.display != 'none') {
+        document.getElementById(id).style.display = 'none';
+        return;
+      }
+      document.getElementById('cp').style.display = 'none';
+      document.getElementById('cpp').style.display = 'none';
+      document.getElementById('java').style.display = 'none';
+      document.getElementById('python').style.display = 'none';
+      document.getElementById(id).style.display = 'block';
+    }
+    var snapshots = []
+
+    function captureSnapshot() {
+      html2canvas(document.querySelector("#pyOutputPane")).then(canvas => {
+        snapshots.push(canvas)
+      });
+    }
+
+    function downloadPdf() {
+       var pdf = new jsPDF('l', 'pt', 'a4');
+       snapshots.forEach(function(canvas) {
+         var imgData = canvas.toDataURL("image/png", 1.0);
+       pdf.addImage(imgData, 'PNG', 20, 20, (canvas.width * 0.75), (canvas.height * 0.75));
+       pdf.addPage();
+     });
+     pdf.save('final.pdf');
+   }
+  </script>
+
+
+
+</head>
+
+<body>
+  <div class="neon-text">CHAMP Code Visualizer</div>
+
+
+
+  <div id="pyInputPane">
+
+    <div id="codeInputWarnings">Programming language
+
+      <select id="pythonVersionSelector" class="custom-select">
+    <option value="2">Python</option>
+    <option value="java">Java</option>
+    <option value="c">C</option>
+    <option value="cpp">C++</option>
+  </select>
+
+    </div>
+
+    <div id="codeInputPane"></div>
+    <!-- populate with Ace code editor instance -->
+    <div id="frontendErrorOutput"></div>
+
+    <p>
+      <button id="executeBtn" type="button" class="btn btn-primary">Visualize Execution</button>
+    </p>
+
+
+    <div id="exampleSnippets"></div>
+
+  </div>
+
+  <div id="pyOutputPane"></div>
+
+  <div class="retro">
+    St. Joseph's Institute of Technology
+  </div>
+</body>
+
+</html>
