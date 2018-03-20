@@ -10,6 +10,7 @@
   <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="js/html2canvas.js"></script>
   <script type="text/javascript" src="js/jspdf.min.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css" />
   <style>
     .neon-text {
@@ -157,16 +158,67 @@
       });
     }
 
-    function downloadPdf() {
-       var pdf = new jsPDF('l', 'pt', 'a4');
-       snapshots.forEach(function(canvas) {
-         var imgData = canvas.toDataURL("image/png", 1.0);
-       pdf.addImage(imgData, 'PNG', 20, 20, (canvas.width * 0.75), (canvas.height * 0.75));
-       pdf.addPage();
-     });
-     pdf.save('final.pdf');
-   }
+    function downloadPdf(count) {
+      var pdf = ''
+      if (count == 1) {
+        pdf = new jsPDF('l', 'pt', 'a4');
+        snapshots.forEach(function(canvas, idx, array) {
+            var imgData = canvas.toDataURL("image/png", 1.0);
+            if(canvas.width > 841 || canvas.height > 595)
+            {
+              var newW = (841 / canvas.width);
+              var newH = (595 / canvas.height);
+              var ratio = (newW < newH)? newW:newH;
+              pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio, canvas.height * ratio);
+            }
+            else {
+              pdf.addImage(imgData, 'PNG', 20, 20, canvas.width, canvas.height);
+            }
+            if (idx != array.length - 1) {
+              pdf.addPage();
+            }
+          });
+          pdf.save('final.pdf');
+        }
+          else {
+
+            pdf = new jsPDF('p', 'pt', 'a4');
+            var imgData;
+            var dummyDiv = document.createElement("div");
+            dummyDiv.id = "dummyDiv";
+            $('body').append(dummyDiv);
+            for(var i = 0; i < snapshots.length; i = i + 2) {
+              dummyDiv.appendChild(snapshots[i])
+              if(i != snapshots.length - 1) {
+                dummyDiv.appendChild(snapshots[i + 1]);
+              }
+              var flag = false;
+              html2canvas(document.querySelector("#dummyDiv"), { 'async': false }).then(canvas => {
+                imgData = canvas.toDataURL("image/png", 1.0);
+                if(canvas.width > 595 || canvas.height > 841)
+                {
+                  var newW = (595 / canvas.width);
+                  var newH = (841 / canvas.height);
+                  var ratio = (newW < newH)? newW:newH;
+                  pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio, canvas.height * ratio);
+                  flag = true;
+                }
+                if(i < snapshots.length - 2)
+                {
+                  pdf.addPage();
+                }
+              });
+              while(flag == false)
+              {
+                
+              }
+            }
+            pdf.save('final.pdf');
+          }
+
+      }
   </script>
+  });
 
 
 
@@ -206,7 +258,7 @@
   <div id="pyOutputPane"></div>
 
   <div class="retro">
-    St. Joseph's Institute of Technology
+    St. Joseph&quot;s Institute of Technology
   </div>
 </body>
 

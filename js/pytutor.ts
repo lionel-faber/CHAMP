@@ -3206,7 +3206,7 @@ class CodeDisplay {
          <div id="pyCodeOutputDiv"/>\
          <div id="editCodeLinkDiv"><button type="button" id="editBtn" class="btn btn-outline-secondary">Edit code</button>\
          <button type="button" class="btn btn-outline-info" onclick="captureSnapshot()">Add snapshot to PDF</button>\
-         <button type="button" class="btn btn-outline-primary" onclick="downloadPdf()">Generate PDF</button>\
+         <button type="button" class="btn btn-outline-primary" onclick="downloadPdf(1)">Generate PDF</button>\
          </div>\
          <div id="legendDiv"/>\
          <div id="codeFooterDocs">Click a line of code to set a breakpoint; use the Back and Forward buttons to jump there.</div>\

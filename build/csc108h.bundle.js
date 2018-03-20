@@ -3273,7 +3273,7 @@ var CodeDisplay = (function () {
          <div id="pyCodeOutputDiv"/>\
          <div id="editCodeLinkDiv"><button type="button" id="editBtn" class="btn btn-outline-secondary">Edit code</button>\
          <button type="button" class="btn btn-outline-info" onclick="captureSnapshot()">Add snapshot to PDF</button>\
-         <button type="button" class="btn btn-outline-primary" onclick="downloadPdf()">Generate PDF</button>\
+         <button type="button" class="btn btn-outline-primary" onclick="downloadPdf(1)">Generate PDF</button>\
          </div>\
          <div id="legendDiv"/>\
          <div id="codeFooterDocs">Click a line of code to set a breakpoint; use the Back and Forward buttons to jump there.</div>\
@@ -22658,9 +22658,9 @@ __webpack_require__(1)(__webpack_require__(55))
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(jQuery, $) {
-// 
-// 
-// 
+//
+//
+//
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -22911,7 +22911,6 @@ var OptFrontendSharedSessions = (function (_super) {
         return '(unknown language)'; // fail soft, even though this shouldn't ever happen
     };
     OptFrontendSharedSessions.prototype.getHelpQueue = function () {
-        var _this = this;
         // VERY IMPORTANT: to avoid overloading the server, don't send these
         // requests when you're idle
         if (this.isIdle) {
@@ -22919,141 +22918,6 @@ var OptFrontendSharedSessions = (function (_super) {
             return; // return early!
         }
         var ghqUrl = exports.TogetherJS.config.get("hubBase").replace(/\/*$/, "") + "/getHelpQueue";
-        $.ajax({
-            url: ghqUrl,
-            dataType: "json",
-            data: { user_uuid: this.userUUID },
-            error: function () {
-                console.log('/getHelpQueue error');
-                if (_this.wantsPublicHelp) {
-                    $("#publicHelpQueue").html('ERROR: help server is down. If you had previously asked for help, something is wrong; stop this session and try again later.');
-                }
-                else {
-                    $("#publicHelpQueue").empty(); // avoid showing stale results
-                }
-            },
-            success: function (resp) {
-                var displayEmptyQueueMsg = false;
-                if (resp && resp.length > 0) {
-                    $("#publicHelpQueue").empty();
-                    var myShareId = exports.TogetherJS.shareId();
-                    // if numClients > 1, that means the session has multiple
-                    // participants, so "demote" to those to the bottom of the
-                    // help queue so they're displayed last. but keep everything in order.
-                    var entriesWithoutHelpers = [];
-                    var entriesWithHelpers = [];
-                    resp.forEach(function (e) {
-                        // when testing on localhost, we sometimes use the
-                        // production TogetherJS chat server, but we don't want to
-                        // show localhost entries on the global queue for people on
-                        // the real site since there's no way they can jump in to join
-                        //
-                        // i.e., if your browser isn't on localhost but the URL of
-                        // the help queue entry is on localhost, then *don't* display it
-                        if ((window.location.href.indexOf('localhost') < 0) &&
-                            (e.url.indexOf('localhost') >= 0)) {
-                            return;
-                        }
-                        // use moment.js to generate human-readable relative times:
-                        var d = new Date();
-                        var timeSinceCreationStr = moment(d.valueOf() - e.timeSinceCreation).fromNow();
-                        var timeSinceLastMsgStr = moment(d.valueOf() - e.timeSinceLastMsg).fromNow();
-                        var langName = _this.langToEnglish(e.lang);
-                        var curStr = e.username;
-                        if (e.country && e.city) {
-                            // print 'region' (i.e., state) for US addresses:
-                            if (e.country === "United States" && e.region) {
-                                curStr += ' from ' + e.city + ', ' + e.region + ', US needs help with ' + langName;
-                            }
-                            else {
-                                curStr += ' from ' + e.city + ', ' + e.country + ' needs help with ' + langName;
-                            }
-                        }
-                        else if (e.country) {
-                            curStr += ' from ' + e.country + ' needs help with ' + langName;
-                        }
-                        else if (e.city) {
-                            curStr += ' from ' + e.city + ' needs help with ' + langName;
-                        }
-                        else {
-                            curStr += ' needs help with ' + langName;
-                        }
-                        if (e.id === myShareId) {
-                            curStr += ' - <span class="redBold">this is you!</span>';
-                            curStr += ' <button id="stopRequestHelpBtn" type="button">Stop requesting help</button>';
-                        }
-                        else {
-                            if (!e.numClients || isNaN(e.numClients) || e.numClients <= 1) {
-                                curStr += ' - <a class="gotoHelpLink" style="font-weight: bold;" href="' + e.url + '" target="_blank">click to help</a>';
-                            }
-                            else {
-                                curStr += ' - ' + String(e.numClients) + ' people in session';
-                                curStr += ' - <a class="gotoHelpLink" href="' + e.url + '" target="_blank">click to help</a>';
-                            }
-                            curStr += ' <span class="helpQueueSmallText">(requested ' + timeSinceCreationStr + ', last active ' + timeSinceLastMsgStr + ')</span>';
-                        }
-                        if (e.numClients > 1) {
-                            entriesWithHelpers.push(curStr);
-                        }
-                        else {
-                            entriesWithoutHelpers.push(curStr);
-                        }
-                    });
-                    if ((entriesWithHelpers.length + entriesWithoutHelpers.length) > 0) {
-                        $("#publicHelpQueue").html('<div style="margin-bottom: 5px;">These Python Tutor users are asking for help right now. Please volunteer to help!</div>');
-                        // prioritize help entries that don't currently have helpers helping (i.e., numClients <= 1)
-                        entriesWithoutHelpers.forEach(function (e) {
-                            $("#publicHelpQueue").append('<li>' + e + '</li>');
-                        });
-                        entriesWithHelpers.forEach(function (e) {
-                            $("#publicHelpQueue").append('<li>' + e + '</li>');
-                        });
-                        // add these handlers AFTER the respective DOM nodes have been
-                        // added above:
-                        $("#stopRequestHelpBtn").click(function () {
-                            _this.wantsPublicHelp = false;
-                            var rphUrl = exports.TogetherJS.config.get("hubBase").replace(/\/*$/, "") + "/requestPublicHelp";
-                            var shareId = exports.TogetherJS.shareId();
-                            $.ajax({
-                                url: rphUrl,
-                                dataType: "json",
-                                data: { id: shareId, removeFromQueue: true },
-                                success: function () {
-                                    _this.getHelpQueue(); // update the help queue ASAP to get updated status
-                                },
-                                error: function () {
-                                    _this.getHelpQueue(); // update the help queue ASAP to get updated status
-                                },
-                            });
-                        });
-                        // add confirmation to hopefully establish some etiquette expectations
-                        $(".gotoHelpLink").click(function () {
-                            var confirmation = confirm('Thanks for volunteering! If you press OK, you will join a live chat session with the help requester. Please be polite and helpful in your interactions.');
-                            if (confirmation) {
-                                return true; // cause the link to be clicked as normal
-                            }
-                            else {
-                                return false; // returning false will NOT cause the link to be clicked
-                            }
-                        });
-                    }
-                    else {
-                        displayEmptyQueueMsg = true;
-                    }
-                }
-                else {
-                    displayEmptyQueueMsg = true;
-                }
-                if (displayEmptyQueueMsg) {
-                    if (_this.wantsPublicHelp) {
-                        $("#publicHelpQueue").html('Nobody is currently asking for help. If you had previously asked for help, something is wrong; stop this session and try again later.');
-                    }
-                    else {
-                        $("#publicHelpQueue").html('Nobody is currently asking for help using the "Get live help!" button.');
-                    }
-                }
-            },
-        });
     };
     // important overrides to inject in pieces of TogetherJS functionality
     // without triggering spurious error messages
